@@ -1,29 +1,25 @@
-# Welcome to your Lovable project
+# MyService
 
-This project was built with [Lovable](https://lovable.dev).
+Offline-first PWA to plan and track monthly service hours. All data lives in `localStorage` on the device — no backend, no accounts.
 
-## Build with Lovable
-
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+## Develop
+```bash
+npm install
 npm run dev
 ```
+In dev mode, Settings has a "Load sample data" button; production starts empty.
 
-## Built with
+## Deploy to GitHub Pages
+1. Push to `main`.
+2. In the repo: Settings → Pages → Source: **GitHub Actions**.
+3. `.github/workflows/deploy.yml` builds with `BASE_PATH=/<repo>/` and publishes `dist/client`.
 
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+Local static build: `BASE_PATH=/myrepo/ npm run build:pages` (use `/` for a custom domain).
+
+## Structure
+- `src/lib/types.ts` — data model (settings, months, planned activities, service entries)
+- `src/lib/storage/` — the only code touching localStorage (swap for sync later)
+- `src/lib/store.ts` — reactive hook over storage
+- `src/lib/stats.ts` — goal/pace calculations
+- `src/components/app/` — UI components; `src/routes/` — screens
+- `public/sw.js`, `public/manifest.webmanifest` — offline + install
