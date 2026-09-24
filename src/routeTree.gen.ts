@@ -10,33 +10,106 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as HistoryRouteImport } from './routes/history'
+import { Route as PlanRouteImport } from './routes/plan'
+import { Route as ServiceRouteImport } from './routes/service'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as HistoryIndexRouteImport } from './routes/history.index'
+import { Route as HistoryMonthIdRouteImport } from './routes/history.$monthId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlanRoute = PlanRouteImport.update({
+  id: '/plan',
+  path: '/plan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServiceRoute = ServiceRouteImport.update({
+  id: '/service',
+  path: '/service',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoryIndexRoute = HistoryIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => HistoryRoute,
+} as any)
+const HistoryMonthIdRoute = HistoryMonthIdRouteImport.update({
+  id: '/$monthId',
+  path: '/$monthId',
+  getParentRoute: () => HistoryRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/history': typeof HistoryRouteWithChildren
+  '/plan': typeof PlanRoute
+  '/service': typeof ServiceRoute
+  '/settings': typeof SettingsRoute
+  '/history/$monthId': typeof HistoryMonthIdRoute
+  '/history/': typeof HistoryIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/plan': typeof PlanRoute
+  '/service': typeof ServiceRoute
+  '/settings': typeof SettingsRoute
+  '/history/$monthId': typeof HistoryMonthIdRoute
+  '/history': typeof HistoryIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/history': typeof HistoryRouteWithChildren
+  '/plan': typeof PlanRoute
+  '/service': typeof ServiceRoute
+  '/settings': typeof SettingsRoute
+  '/history/$monthId': typeof HistoryMonthIdRoute
+  '/history/': typeof HistoryIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/history'
+    | '/plan'
+    | '/service'
+    | '/settings'
+    | '/history/$monthId'
+    | '/history/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    '/' | '/plan' | '/service' | '/settings' | '/history/$monthId' | '/history'
+  id:
+    | '__root__'
+    | '/'
+    | '/history'
+    | '/plan'
+    | '/service'
+    | '/settings'
+    | '/history/$monthId'
+    | '/history/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HistoryRoute: typeof HistoryRouteWithChildren
+  PlanRoute: typeof PlanRoute
+  ServiceRoute: typeof ServiceRoute
+  SettingsRoute: typeof SettingsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +121,70 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plan': {
+      id: '/plan'
+      path: '/plan'
+      fullPath: '/plan'
+      preLoaderRoute: typeof PlanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/service': {
+      id: '/service'
+      path: '/service'
+      fullPath: '/service'
+      preLoaderRoute: typeof ServiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/history/': {
+      id: '/history/'
+      path: '/'
+      fullPath: '/history/'
+      preLoaderRoute: typeof HistoryIndexRouteImport
+      parentRoute: typeof HistoryRoute
+    }
+    '/history/$monthId': {
+      id: '/history/$monthId'
+      path: '/$monthId'
+      fullPath: '/history/$monthId'
+      preLoaderRoute: typeof HistoryMonthIdRouteImport
+      parentRoute: typeof HistoryRoute
+    }
   }
 }
 
+interface HistoryRouteChildren {
+  HistoryMonthIdRoute: typeof HistoryMonthIdRoute
+  HistoryIndexRoute: typeof HistoryIndexRoute
+}
+
+const HistoryRouteChildren: HistoryRouteChildren = {
+  HistoryMonthIdRoute: HistoryMonthIdRoute,
+  HistoryIndexRoute: HistoryIndexRoute,
+}
+
+const HistoryRouteWithChildren =
+  HistoryRoute._addFileChildren(HistoryRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HistoryRoute: HistoryRouteWithChildren,
+  PlanRoute: PlanRoute,
+  ServiceRoute: ServiceRoute,
+  SettingsRoute: SettingsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

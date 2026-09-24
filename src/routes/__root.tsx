@@ -11,6 +11,11 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { AppShell } from "@/components/app/AppShell";
+import { Toaster } from "@/components/ui/sonner";
+
+const BASE = import.meta.env.BASE_URL;
+const THEME_BOOT = `try{var t=(JSON.parse(localStorage.getItem("myservice:v1:settings")||"{}").theme)||"system";if(t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("dark")}catch(e){}`;
 
 function NotFoundComponent() {
   return (
@@ -76,22 +81,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { name: "theme-color", content: "#f7f6f2" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "apple-mobile-web-app-title", content: "MyService" },
+      { title: "MyService — Plan and track your service hours" },
+      { name: "description", content: "A calm, offline-first app to plan and track your monthly service hours." },
+      { property: "og:title", content: "MyService" },
+      { property: "og:description", content: "Plan your service. Track your hours. See your progress." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:card", content: "summary" },
     ],
     links: [
+      { rel: "manifest", href: `${BASE}manifest.webmanifest` },
+      { rel: "apple-touch-icon", href: `${BASE}icons/icon-192.png` },
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: `${BASE}icons/icon-192.png`, type: "image/png" },
     ],
   }),
   shellComponent: RootShell,
@@ -102,8 +111,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
         <HeadContent />
       </head>
       <body>
@@ -120,7 +130,10 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <AppShell>
+        <Outlet />
+      </AppShell>
+      <Toaster position="top-center" />
     </QueryClientProvider>
   );
 }
