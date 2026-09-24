@@ -3,13 +3,19 @@
 //   - TanStack devtools (dev-only, first), tanstackStart, viteReact, tailwindcss, tsConfigPaths,
 //     nitro (build-only using cloudflare as a default target), VITE_* env injection, @ path alias,
 //     React/TanStack dedupe, error logger plugins, and sandbox detection (port/host/strictPort).
-// You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+/**
+ * Static build for GitHub Pages: `GITHUB_PAGES=true BASE_PATH=/repo/ npm run build:pages`.
+ * Produces a fully static SPA (no server) in dist/client.
+ */
+const isPages = process.env.GITHUB_PAGES === "true";
+const basePath = process.env.BASE_PATH ?? "/";
+
 export default defineConfig({
+  vite: isPages ? { base: basePath } : undefined,
   tanstackStart: {
-    // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
-    // nitro/vite builds from this
     server: { entry: "server" },
+    ...(isPages ? { router: { basepath: basePath }, spa: { enabled: true, prerender: { outputPath: "/_shell.html", crawlLinks: false } } } : {}),
   },
 });
