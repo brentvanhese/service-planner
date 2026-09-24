@@ -14,9 +14,8 @@ const basePath = process.env.BASE_PATH ?? "/";
 
 export default defineConfig({
   vite: isPages ? { base: basePath } : undefined,
-  nitro: isPages ? false : undefined,
   tanstackStart: {
     server: { entry: "server" },
-    ...(isPages ? { spa: { enabled: true } } : {}),
+    ...(isPages ? { router: { basepath: basePath }, spa: { enabled: true, prerender: { outputPath: "/_shell.html", crawlLinks: false } } } : {}),
   },
 });
