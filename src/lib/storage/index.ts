@@ -7,6 +7,7 @@ import type {
   ServiceEntry,
   UserSettings,
 } from "../types";
+import { t } from "../i18n";
 import { KEYS, newId, notify, readJSON, removeAll, writeJSON } from "./local";
 
 export { subscribe } from "./local";
@@ -103,13 +104,13 @@ export function exportBackup(): BackupFile {
 export function importBackup(raw: unknown): void {
   const file = raw as Partial<BackupFile>;
   if (!file || file.app !== "MyService" || !file.data) {
-    throw new Error("This file is not a MyService backup.");
+    throw new Error(t("err.notBackup"));
   }
   const { settings, months, planned, service } = file.data;
   if (!Array.isArray(planned) || !Array.isArray(service) || typeof months !== "object") {
-    throw new Error("The backup file is incomplete or damaged.");
+    throw new Error(t("err.damaged"));
   }
-  localStorage.setItem(KEYS.settings, JSON.stringify({ ...DEFAULT_SETTINGS, ...settings, onboardingCompleted: true }));
+  localStorage.setItem(KEYS.settings, JSON.stringify({ ...DEFAULT_SETTINGS, language: getSettings().language, ...settings, onboardingCompleted: true }));
   localStorage.setItem(KEYS.months, JSON.stringify(months ?? {}));
   localStorage.setItem(KEYS.planned, JSON.stringify(planned));
   localStorage.setItem(KEYS.service, JSON.stringify(service));

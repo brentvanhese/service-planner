@@ -1,4 +1,5 @@
 import { format, parseISO } from "date-fns";
+import { dateLocale } from "./i18n";
 import type { ISODate, MonthId } from "./types";
 
 export const toISODate = (d: Date): ISODate => format(d, "yyyy-MM-dd");
@@ -11,9 +12,9 @@ export function monthIdToDate(id: MonthId): Date {
 }
 
 export function monthLabel(id: MonthId): string {
-  return format(monthIdToDate(id), "MMMM yyyy");
+  return format(monthIdToDate(id), "MMMM yyyy", { locale: dateLocale() });
 }
 
 export function dayLabel(date: ISODate): string {
-  return format(parseISO(date), "EEE d MMM");
+  return format(parseISO(date), "EEE d MMM", { locale: dateLocale() });
 }

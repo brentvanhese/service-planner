@@ -6,13 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ACTIVITY_TYPES } from "@/lib/activities";
+import { ACTIVITY_TYPES, activityLabel } from "@/lib/activities";
 import { todayISO } from "@/lib/dates";
 import {
   deletePlannedActivity, deleteServiceEntry, restorePlannedActivity, restoreServiceEntry,
   savePlannedActivity, saveServiceEntry,
 } from "@/lib/storage";
 import type { ActivityType, EntryKind, PlannedActivity, ServiceEntry } from "@/lib/types";
+import { t } from "@/lib/i18n";
 import { DurationField } from "./DurationField";
 
 export type EditableEntry = PlannedActivity | ServiceEntry;
@@ -42,7 +43,6 @@ export function EntryForm({ kind, open, onOpenChange, entry, defaultDate }: Prop
   }, [open, entry, defaultDate]);
 
   const planned = kind === "planned";
-  const noun = planned ? "planned activity" : "service";
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +50,7 @@ export function EntryForm({ kind, open, onOpenChange, entry, defaultDate }: Prop
     const base = { id: entry?.id, date, durationMinutes: duration, activityType: type, note: note.trim() || undefined };
     if (planned) savePlannedActivity({ ...base, startTime: startTime || undefined });
     else saveServiceEntry(base);
-    toast.success(entry ? "Changes saved" : planned ? "Activity planned" : "Service added");
+    toast.success(entry ? t("form.saved") : planned ? t("form.planned") : t("form.added"));
     onOpenChange(false);
   };
 
@@ -59,9 +59,9 @@ export function EntryForm({ kind, open, onOpenChange, entry, defaultDate }: Prop
     if (planned) deletePlannedActivity(entry.id);
     else deleteServiceEntry(entry.id);
     const snapshot = entry;
-    toast(`Deleted ${noun}`, {
+    toast(planned ? t("form.deletedPlanned") : t("form.deletedService"), {
       action: {
-        label: "Undo",
+        label: t("form.undo"),
         onClick: () => (planned ? restorePlannedActivity(snapshot as PlannedActivity) : restoreServiceEntry(snapshot)),
       },
     });
@@ -74,46 +74,46 @@ export function EntryForm({ kind, open, onOpenChange, entry, defaultDate }: Prop
         <form onSubmit={submit} className="overflow-y-auto">
           <DrawerHeader className="text-left">
             <DrawerTitle className="text-xl">
-              {entry ? `Edit ${noun}` : planned ? "Plan service" : "Add service"}
+              {entry ? (planned ? t("form.editPlanned") : t("form.editService")) : planned ? t("form.plan") : t("form.add")}
             </DrawerTitle>
             <DrawerDescription>
-              {planned ? "Planned time is not counted until you record it." : "Record time you've completed."}
+              {planned ? t("form.planDesc") : t("form.addDesc")}
             </DrawerDescription>
           </DrawerHeader>
           <div className="space-y-5 px-4">
             <div className="grid grid-cols-2 gap-3">
               <div className={planned ? "space-y-2" : "col-span-2 space-y-2"}>
-                <Label htmlFor="date">Date</Label>
+                <Label htmlFor="date">{t("form.date")}</Label>
                 <Input id="date" type="date" required value={date} onChange={(e) => setDate(e.target.value)} className="h-12" />
               </div>
               {planned && (
                 <div className="space-y-2">
-                  <Label htmlFor="start">Start time <span className="text-muted-foreground">(optional)</span></Label>
+                  <Label htmlFor="start">{t("form.start")} <span className="text-muted-foreground">{t("form.optional")}</span></Label>
                   <Input id="start" type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="h-12" />
                 </div>
               )}
             </div>
             <DurationField value={duration} onChange={setDuration} />
             <div className="space-y-2">
-              <Label htmlFor="type">Activity</Label>
+              <Label htmlFor="type">{t("form.activity")}</Label>
               <select id="type" value={type} onChange={(e) => setType(e.target.value as ActivityType)}
                 className="h-12 w-full rounded-md border border-input bg-background px-3 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                {ACTIVITY_TYPES.map((a) => <option key={a.value} value={a.value}>{a.label}</option>)}
+                {ACTIVITY_TYPES.map((a) => <option key={a.value} value={a.value}>{activityLabel(a.value)}</option>)}
               </select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="note">Note <span className="text-muted-foreground">(optional)</span></Label>
+              <Label htmlFor="note">{t("form.note")} <span className="text-muted-foreground">{t("form.optional")}</span></Label>
               <Textarea id="note" rows={2} value={note} onChange={(e) => setNote(e.target.value)} maxLength={500} />
             </div>
           </div>
           <DrawerFooter className="flex-row gap-3">
             {entry && (
-              <Button type="button" variant="outline" size="lg" className="h-12 rounded-2xl" onClick={remove} aria-label={`Delete ${noun}`}>
+              <Button type="button" variant="outline" size="lg" className="h-12 rounded-2xl" onClick={remove} aria-label={t("form.delete")}>
                 <Trash2 />
               </Button>
             )}
             <Button type="submit" size="lg" className="h-12 flex-1 rounded-2xl">
-              {entry ? "Save changes" : "Save"}
+              {entry ? t("form.saveChanges") : t("form.save")}
             </Button>
           </DrawerFooter>
         </form>

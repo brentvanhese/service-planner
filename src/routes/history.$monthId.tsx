@@ -7,6 +7,7 @@ import { MonthCalendar } from "@/components/app/MonthCalendar";
 import { DayDetail } from "@/components/app/DayDetail";
 import { useAppData } from "@/lib/store";
 import { computeMonthStats, entriesInMonth } from "@/lib/stats";
+import { t } from "@/lib/i18n";
 import { monthLabel } from "@/lib/dates";
 
 export const Route = createFileRoute("/history/$monthId")({
@@ -27,13 +28,13 @@ function MonthDetail() {
   const [selected, setSelected] = useState<string>();
   const valid = /^\d{4}-\d{2}$/.test(monthId);
 
-  if (!valid) return <p className="text-muted-foreground">Unknown month.</p>;
+  if (!valid) return <p className="text-muted-foreground">{t("hist.unknown")}</p>;
   const stats = computeMonthStats(data, monthId);
 
   return (
     <>
       <Link to="/history" className="-ml-2 mb-2 inline-flex h-10 items-center gap-1 rounded-xl px-2 text-sm font-medium text-muted-foreground hover:text-foreground">
-        <ChevronLeft className="size-4" /> History
+        <ChevronLeft className="size-4" /> {t("hist.title")}
       </Link>
       <PageHeader title={monthLabel(monthId)} />
       <MonthSummary stats={stats} />
