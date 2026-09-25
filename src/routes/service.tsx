@@ -9,6 +9,7 @@ import { useAppData } from "@/lib/store";
 import { entriesInMonth } from "@/lib/stats";
 import { currentMonthId, monthLabel } from "@/lib/dates";
 import { formatDuration } from "@/lib/duration";
+import { t } from "@/lib/i18n";
 import { useEntryEditor } from "@/hooks/use-entry-editor";
 
 export const Route = createFileRoute("/service")({
@@ -32,20 +33,20 @@ function ServicePage() {
 
   return (
     <>
-      <PageHeader subtitle={monthLabel(id)} title="Service" />
+      <PageHeader subtitle={monthLabel(id)} title={t("svc.title")} />
       <Button size="lg" className="h-14 w-full rounded-2xl text-base shadow-soft" onClick={() => editor.openNew()}>
-        <Plus /> Add service
+        <Plus /> {t("form.add")}
       </Button>
       <section className="mt-8 space-y-3">
         <div className="flex items-baseline justify-between">
-          <h2 className="text-lg font-semibold">This month</h2>
-          <span className="text-sm text-muted-foreground tabular-nums">{formatDuration(total)} total</span>
+          <h2 className="text-lg font-semibold">{t("svc.thisMonth")}</h2>
+          <span className="text-sm text-muted-foreground tabular-nums">{t("svc.total", { d: formatDuration(total) })}</span>
         </div>
         {entries.length ? (
           <EntryList entries={entries} onSelect={editor.openEdit} />
         ) : (
-          <EmptyState icon={ClipboardList} title="No service recorded yet." body="Start tracking your service for this month."
-            action={{ label: "Add service", onClick: () => editor.openNew() }} />
+          <EmptyState icon={ClipboardList} title={t("svc.empty")} body={t("svc.emptyBody")}
+            action={{ label: t("form.add"), onClick: () => editor.openNew() }} />
         )}
       </section>
       <EntryForm kind="service" {...editor.formProps} />

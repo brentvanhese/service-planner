@@ -1,21 +1,22 @@
 import { CheckCircle2, Compass, PartyPopper, Sparkles } from "lucide-react";
 import { formatDuration, } from "@/lib/duration";
 import { roundTo5, type MonthStats } from "@/lib/stats";
+import { t } from "@/lib/i18n";
 import { Card } from "./StatCard";
 
 export function StatusCard({ stats }: { stats: MonthStats }) {
   const { status, remainingMinutes, perWeekMinutes, perDayMinutes, daysRemaining } = stats;
   const pace =
     daysRemaining >= 7
-      ? `About ${formatDuration(roundTo5(perWeekMinutes))} per week will get you there.`
-      : `About ${formatDuration(roundTo5(perDayMinutes))} per day will get you there.`;
+      ? t("status.paceWeek", { d: formatDuration(roundTo5(perWeekMinutes)) })
+      : t("status.paceDay", { d: formatDuration(roundTo5(perDayMinutes)) });
 
   const content = {
-    reached: { icon: PartyPopper, title: "Goal reached! 🎉", body: "Wonderful work this month. Anything more is a bonus." },
-    "on-track": { icon: CheckCircle2, title: "You are on track", body: `You need ${formatDuration(remainingMinutes)} more to reach your goal. ${pace}` },
-    behind: { icon: Compass, title: "A little behind your pace", body: `There's still time. You need ${formatDuration(remainingMinutes)} more. ${pace}` },
-    "not-started": { icon: Sparkles, title: "A fresh month", body: `Plan a few activities to get started. ${pace}` },
-    past: { icon: Compass, title: "Month closed", body: "This month is complete." },
+    reached: { icon: PartyPopper, title: t("status.reached.t"), body: t("status.reached.b") },
+    "on-track": { icon: CheckCircle2, title: t("status.ontrack.t"), body: t("status.ontrack.b", { d: formatDuration(remainingMinutes), pace }) },
+    behind: { icon: Compass, title: t("status.behind.t"), body: t("status.behind.b", { d: formatDuration(remainingMinutes), pace }) },
+    "not-started": { icon: Sparkles, title: t("status.fresh.t"), body: t("status.fresh.b", { pace }) },
+    past: { icon: Compass, title: t("status.past.t"), body: t("status.past.b") },
   }[status];
   const Icon = content.icon;
 

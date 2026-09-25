@@ -12,6 +12,7 @@ import { useAppData } from "@/lib/store";
 import { computeMonthStats, entriesInMonth } from "@/lib/stats";
 import { currentMonthId, monthLabel, todayISO } from "@/lib/dates";
 import { formatDuration } from "@/lib/duration";
+import { t } from "@/lib/i18n";
 import { useEntryEditor } from "@/hooks/use-entry-editor";
 
 export const Route = createFileRoute("/plan")({
@@ -37,26 +38,26 @@ function PlanPage() {
 
   return (
     <>
-      <PageHeader subtitle={monthLabel(id)} title="Plan"
-        action={<Button size="icon" className="size-12 rounded-2xl" aria-label="Plan service" onClick={() => editor.openNew(selected)}><Plus /></Button>} />
+      <PageHeader subtitle={monthLabel(id)} title={t("plan.title")}
+        action={<Button size="icon" className="size-12 rounded-2xl" aria-label={t("form.plan")} onClick={() => editor.openNew(selected)}><Plus /></Button>} />
       <p className="mb-4 text-sm text-muted-foreground">
-        <strong className="text-foreground">{formatDuration(stats.plannedMinutes)}</strong> planned this month
-        {" · "}goal {formatDuration(stats.goalMinutes)}
+        <strong className="text-foreground">{formatDuration(stats.plannedMinutes)}</strong> {t("plan.plannedMonth")}
+        {" · "}{t("plan.goal")} {formatDuration(stats.goalMinutes)}
       </p>
       <MonthCalendar monthId={id} planned={planned} service={service} selected={selected} onSelect={setSelected} />
       <div className="mt-6">
         <DayDetail date={selected} planned={planned} service={service} onEditPlanned={editor.openEdit} />
         <Button variant="outline" className="mt-3 h-11 w-full rounded-2xl" onClick={() => editor.openNew(selected)}>
-          <Plus /> Plan for this day
+          <Plus /> {t("plan.forDay")}
         </Button>
       </div>
       <section className="mt-8 space-y-3">
-        <h2 className="text-lg font-semibold">All planned activities</h2>
+        <h2 className="text-lg font-semibold">{t("plan.all")}</h2>
         {planned.length ? (
           <EntryList entries={planned} variant="planned" onSelect={editor.openEdit} />
         ) : (
-          <EmptyState icon={CalendarPlus} title="No service planned yet." body="Plan your first activity."
-            action={{ label: "Plan service", onClick: () => editor.openNew(selected) }} />
+          <EmptyState icon={CalendarPlus} title={t("plan.empty")} body={t("plan.emptyBody")}
+            action={{ label: t("form.plan"), onClick: () => editor.openNew(selected) }} />
         )}
       </section>
       <EntryForm kind="planned" {...editor.formProps} />

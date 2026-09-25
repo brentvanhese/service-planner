@@ -1,3 +1,4 @@
+import { t } from "./i18n";
 import type { ActivityType } from "./types";
 
 export const ACTIVITY_TYPES: { value: ActivityType; label: string }[] = [
@@ -12,5 +13,5 @@ export const ACTIVITY_TYPES: { value: ActivityType; label: string }[] = [
 ];
 
 export function activityLabel(type: ActivityType): string {
-  return ACTIVITY_TYPES.find((a) => a.value === type)?.label ?? "Other";
+  return t(`act.${type}` as Parameters<typeof t>[0]);
 }

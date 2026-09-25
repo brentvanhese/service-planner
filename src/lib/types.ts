@@ -3,6 +3,8 @@ export type ISODate = string;
 /** Month identifier, e.g. "2026-09" */
 export type MonthId = string;
 
+export type Language = "en" | "nl";
+
 export type ThemePreference = "light" | "dark" | "system";
 
 export type ActivityType =
@@ -19,6 +21,8 @@ export interface UserSettings {
   monthlyGoal: number; // hours
   theme: ThemePreference;
   onboardingCompleted: boolean;
+  /** Undefined = follow the device language. */
+  language?: Language;
 }
 
 export interface Month {

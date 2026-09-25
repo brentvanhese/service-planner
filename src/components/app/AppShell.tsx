@@ -7,19 +7,21 @@ import { currentMonthId } from "@/lib/dates";
 import { useApplyTheme } from "@/hooks/use-theme";
 import { registerServiceWorker } from "@/lib/pwa";
 import { Onboarding } from "./Onboarding";
+import { t, useLanguage } from "@/lib/i18n";
 
 const NAV = [
-  { to: "/", label: "Home", icon: Home },
-  { to: "/plan", label: "Plan", icon: CalendarDays },
-  { to: "/service", label: "Service", icon: Plus, primary: true },
-  { to: "/history", label: "History", icon: History },
-  { to: "/settings", label: "Settings", icon: Settings },
+  { to: "/", label: "nav.home", icon: Home },
+  { to: "/plan", label: "nav.plan", icon: CalendarDays },
+  { to: "/service", label: "nav.service", icon: Plus, primary: true },
+  { to: "/history", label: "nav.history", icon: History },
+  { to: "/settings", label: "nav.settings", icon: Settings },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
   const hydrated = useHydrated();
   const { settings } = useAppData();
   useApplyTheme(settings.theme);
+  const lang = useLanguage();
 
   useEffect(() => {
     registerServiceWorker();
@@ -30,11 +32,11 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, [hydrated, settings.onboardingCompleted]);
 
   if (!hydrated) return <div className="min-h-dvh bg-background" aria-busy="true" />;
-  if (!settings.onboardingCompleted) return <Onboarding />;
+  if (!settings.onboardingCompleted) return <Onboarding key={lang} />;
 
   return (
     <div className="min-h-dvh bg-background text-foreground">
-      <main className="mx-auto w-full max-w-2xl px-4 pb-32 pt-[max(1.25rem,env(safe-area-inset-top))] sm:px-6">
+      <main key={lang} className="mx-auto w-full max-w-2xl px-4 pb-32 pt-[max(1.25rem,env(safe-area-inset-top))] sm:px-6">
         {children}
       </main>
       <nav
@@ -56,7 +58,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 ) : (
                   <Icon className="size-5 transition-transform group-active:scale-90" aria-hidden />
                 )}
-                <span className={"primary" in rest ? "sr-only" : undefined}>{label}</span>
+                <span className={"primary" in rest ? "sr-only" : undefined}>{t(label)}</span>
               </Link>
             </li>
           ))}
