@@ -12,7 +12,8 @@ export function monthIdToDate(id: MonthId): Date {
 }
 
 export function monthLabel(id: MonthId): string {
-  return format(monthIdToDate(id), "MMMM yyyy", { locale: dateLocale() });
+  const s = format(monthIdToDate(id), "MMMM yyyy", { locale: dateLocale() });
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 export function dayLabel(date: ISODate): string {
