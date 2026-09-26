@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Trash2 } from "lucide-react";
+import { CheckCircle2, Trash2 } from "lucide-react";
+
+// iOS Safari gives native date/time inputs an intrinsic min-width that overflows grid cells.
+const dtInput = "h-12 w-full min-w-0 max-w-full appearance-none text-left [&::-webkit-date-and-time-value]:text-left";
 import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,6 +57,15 @@ export function EntryForm({ kind, open, onOpenChange, entry, defaultDate }: Prop
     onOpenChange(false);
   };
 
+  /** Converts the planned activity (with current form values) into a completed service entry. */
+  const complete = () => {
+    if (!entry || !date || duration <= 0) return;
+    saveServiceEntry({ date, durationMinutes: duration, activityType: type, note: note.trim() || undefined });
+    deletePlannedActivity(entry.id);
+    toast.success(t("form.completed"));
+    onOpenChange(false);
+  };
+
   const remove = () => {
     if (!entry) return;
     if (planned) deletePlannedActivity(entry.id);
@@ -82,14 +94,14 @@ export function EntryForm({ kind, open, onOpenChange, entry, defaultDate }: Prop
           </DrawerHeader>
           <div className="space-y-5 px-4">
             <div className="grid grid-cols-2 gap-3">
-              <div className={planned ? "space-y-2" : "col-span-2 space-y-2"}>
+              <div className={planned ? "min-w-0 space-y-2" : "col-span-2 min-w-0 space-y-2"}>
                 <Label htmlFor="date">{t("form.date")}</Label>
-                <Input id="date" type="date" required value={date} onChange={(e) => setDate(e.target.value)} className="h-12" />
+                <Input id="date" type="date" required value={date} onChange={(e) => setDate(e.target.value)} className={dtInput} />
               </div>
               {planned && (
-                <div className="space-y-2">
+                <div className="min-w-0 space-y-2">
                   <Label htmlFor="start">{t("form.start")} <span className="text-muted-foreground">{t("form.optional")}</span></Label>
-                  <Input id="start" type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="h-12" />
+                  <Input id="start" type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className={dtInput} />
                 </div>
               )}
             </div>
@@ -106,15 +118,22 @@ export function EntryForm({ kind, open, onOpenChange, entry, defaultDate }: Prop
               <Textarea id="note" rows={2} value={note} onChange={(e) => setNote(e.target.value)} maxLength={500} />
             </div>
           </div>
-          <DrawerFooter className="flex-row gap-3">
-            {entry && (
-              <Button type="button" variant="outline" size="lg" className="h-12 rounded-2xl" onClick={remove} aria-label={t("form.delete")}>
-                <Trash2 />
+          <DrawerFooter className="gap-3">
+            {planned && entry && (
+              <Button type="button" variant="secondary" size="lg" className="h-12 w-full rounded-2xl" onClick={complete}>
+                <CheckCircle2 /> {t("form.complete")}
               </Button>
             )}
-            <Button type="submit" size="lg" className="h-12 flex-1 rounded-2xl">
-              {entry ? t("form.saveChanges") : t("form.save")}
-            </Button>
+            <div className="flex gap-3">
+              {entry && (
+                <Button type="button" variant="outline" size="lg" className="h-12 rounded-2xl" onClick={remove} aria-label={t("form.delete")}>
+                  <Trash2 />
+                </Button>
+              )}
+              <Button type="submit" size="lg" className="h-12 flex-1 rounded-2xl">
+                {entry ? t("form.saveChanges") : t("form.save")}
+              </Button>
+            </div>
           </DrawerFooter>
         </form>
       </DrawerContent>
