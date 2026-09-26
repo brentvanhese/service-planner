@@ -10,12 +10,12 @@ export function loadSampleData() {
   for (let back = 2; back >= 0; back--) {
     const ref = subMonths(today, back);
     const id = monthIdOf(toISODate(ref));
-    const [y, m] = id.split("-").map(Number);
+    const [y = 0, m = 1] = id.split("-").map(Number);
     saveMonth({ id, year: y, month: m, goalHours: back === 2 ? 10 : 12 });
     const first = new Date(y, m - 1, 1);
     for (let d = 1; d < 28; d += 3 + (d % 2)) {
       const date = toISODate(addDays(first, d));
-      const entry = { date, durationMinutes: 60 + (d % 3) * 30, activityType: types[d % types.length] };
+      const entry = { date, durationMinutes: 60 + (d % 3) * 30, activityType: types[d % types.length]! };
       if (date <= toISODate(today)) saveServiceEntry(entry);
       if (back === 0) savePlannedActivity({ ...entry, startTime: "09:30" });
     }

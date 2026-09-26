@@ -36,14 +36,14 @@ export const saveMonth = (month: Month): void =>
 export function ensureMonth(id: MonthId): Month {
   const existing = getMonth(id);
   if (existing) return existing;
-  const [y, m] = id.split("-").map(Number);
+  const [y = 0, m = 1] = id.split("-").map(Number);
   const month: Month = { id, year: y, month: m, goalHours: getSettings().monthlyGoal };
   saveMonth(month);
   return month;
 }
 
 /* ---------- Entries (shared helpers) ---------- */
-type EntryInput<T> = Omit<T, "id" | "createdAt" | "updatedAt"> & { id?: string };
+type EntryInput<T> = Omit<T, "id" | "createdAt" | "updatedAt"> & { id?: string | undefined };
 
 function upsert<T extends { id: string; date: string; createdAt: string; updatedAt: string }>(
   key: string,

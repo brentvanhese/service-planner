@@ -51,7 +51,7 @@ function SettingsPage() {
   const saveGoal = (e: React.FormEvent) => {
     e.preventDefault();
     const value = Number(goal);
-    if (!Number.isFinite(value) || value <= 0 || value > 200) return toast.error(t("set.goalError"));
+    if (!Number.isFinite(value) || value <= 0 || value > 200) { toast.error(t("set.goalError")); return; }
     saveSettings({ monthlyGoal: value });
     if (applyCurrent) saveMonth({ ...ensureMonth(monthId), goalHours: value });
     toast.success(t("set.goalSaved"));

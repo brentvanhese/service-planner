@@ -6,7 +6,7 @@ import type { EditableEntry } from "./EntryForm";
 
 interface Props {
   entries: EditableEntry[];
-  onSelect?: (e: EditableEntry) => void;
+  onSelect?: ((e: EditableEntry) => void) | undefined;
   showDate?: boolean;
   variant?: "planned" | "service";
 }
