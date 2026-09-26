@@ -43,7 +43,7 @@ export function ensureMonth(id: MonthId): Month {
 }
 
 /* ---------- Entries (shared helpers) ---------- */
-type EntryInput<T> = Omit<T, "id" | "createdAt" | "updatedAt"> & { id?: string };
+type EntryInput<T> = Omit<T, "id" | "createdAt" | "updatedAt"> & { id?: string | undefined };
 
 function upsert<T extends { id: string; date: string; createdAt: string; updatedAt: string }>(
   key: string,
