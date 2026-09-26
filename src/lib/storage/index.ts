@@ -36,7 +36,7 @@ export const saveMonth = (month: Month): void =>
 export function ensureMonth(id: MonthId): Month {
   const existing = getMonth(id);
   if (existing) return existing;
-  const [y, m] = id.split("-").map(Number);
+  const [y = 0, m = 1] = id.split("-").map(Number);
   const month: Month = { id, year: y, month: m, goalHours: getSettings().monthlyGoal };
   saveMonth(month);
   return month;

@@ -28,6 +28,6 @@ export function parseDuration(input: string): number | null {
     return Math.round(h * 60 + m);
   }
   const num = s.match(/^(\d+(?:[.,]\d+)?)$/);
-  if (num) return Math.round(parseFloat(num[1].replace(",", ".")) * 60);
+  if (num) return Math.round(parseFloat(num[1]!.replace(",", ".")) * 60);
   return null;
 }

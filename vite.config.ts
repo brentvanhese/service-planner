@@ -9,11 +9,11 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
  * Static build for GitHub Pages: `GITHUB_PAGES=true BASE_PATH=/repo/ npm run build:pages`.
  * Produces a fully static SPA (no server) in dist/client.
  */
-const isPages = process.env.GITHUB_PAGES === "true";
-const basePath = process.env.BASE_PATH ?? "/";
+const isPages = process.env["GITHUB_PAGES"] === "true";
+const basePath = process.env["BASE_PATH"] ?? "/";
 
 export default defineConfig({
-  vite: isPages ? { base: basePath } : undefined,
+  ...(isPages ? { vite: { base: basePath } } : {}),
   tanstackStart: {
     server: { entry: "server" },
     ...(isPages ? { router: { basepath: basePath }, spa: { enabled: true, prerender: { outputPath: "/_shell.html", crawlLinks: false } } } : {}),

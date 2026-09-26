@@ -37,13 +37,13 @@ interface BaseEntry {
   date: ISODate;
   durationMinutes: number;
   activityType: ActivityType;
-  note?: string;
+  note?: string | undefined;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface PlannedActivity extends BaseEntry {
-  startTime?: string; // "HH:mm"
+  startTime?: string | undefined; // "HH:mm"
 }
 
 export type ServiceEntry = BaseEntry;

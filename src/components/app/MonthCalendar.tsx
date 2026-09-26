@@ -9,7 +9,7 @@ interface Props {
   monthId: MonthId;
   planned: PlannedActivity[];
   service: ServiceEntry[];
-  selected?: string;
+  selected?: string | undefined;
   onSelect: (date: string) => void;
 }
 
@@ -39,8 +39,8 @@ export function MonthCalendar({ monthId, planned, service, selected, onSelect }:
           const hasDone = !!done[iso];
           const hasPlan = !!plan[iso];
           const label = [format(d, "EEEE d MMMM", { locale: dateLocale() }),
-            hasDone && t("cal.completed", { d: formatDuration(done[iso]) }),
-            hasPlan && t("cal.planned", { d: formatDuration(plan[iso]) })].filter(Boolean).join(", ");
+            hasDone && t("cal.completed", { d: formatDuration(done[iso] ?? 0) }),
+            hasPlan && t("cal.planned", { d: formatDuration(plan[iso] ?? 0) })].filter(Boolean).join(", ");
           return (
             <button key={iso} type="button" disabled={!inMonth} onClick={() => onSelect(iso)}
               aria-label={label} aria-pressed={selected === iso}

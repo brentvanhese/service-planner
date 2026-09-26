@@ -24,7 +24,7 @@ export function Onboarding() {
   const finish = () => {
     if (!valid || value === null) return;
     const id = currentMonthId();
-    const [y, m] = id.split("-").map(Number);
+    const [y = 0, m = 1] = id.split("-").map(Number);
     saveMonth({ id, year: y, month: m, goalHours: value });
     saveSettings({ monthlyGoal: value, onboardingCompleted: true, language: lang });
   };

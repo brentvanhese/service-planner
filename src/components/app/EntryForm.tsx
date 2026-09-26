@@ -23,7 +23,7 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   entry?: EditableEntry | null;
-  defaultDate?: string;
+  defaultDate?: string | undefined;
 }
 
 export function EntryForm({ kind, open, onOpenChange, entry, defaultDate }: Props) {
